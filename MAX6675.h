@@ -3,7 +3,7 @@
 
 class MAX6675 {
     public:
-        MAX6675(int8_t SCLK, int8_t CS, int8_t SO);
+        MAX6675(uint8_t SCLK, uint8_t CS, uint8_t SO);
         double read_temp_celc(void);
         
     private:

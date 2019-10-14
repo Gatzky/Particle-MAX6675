@@ -5,13 +5,14 @@
 
 #define BYTE_LENGTH 8
 #define CELSIUS_DIVIDER 32
+#define DISCONNECTED_CHECK 0xFF00
+#define DICONNECTED_TEMP 0xFF00
 
-MAX6675::MAX6675(int8_t SCLK, int8_t CS, int8_t SO) {
+MAX6675::MAX6675(uint8_t SCLK, uint8_t CS, uint8_t SO) {
     sclk = SCLK;
     cs = CS;
     so = SO;
 
-    //define pin modes
     pinMode(cs, OUTPUT);
     pinMode(sclk, OUTPUT); 
     pinMode(so, INPUT);
@@ -30,13 +31,24 @@ uint16_t MAX6675::read_temp_raw(void) {
     retVal |= spi_read();
 
     digitalWrite(cs, HIGH);
+    
+    if((retVal > DISCONNECTED_CHECK) || (retVal == 0)){
+        retVal = DICONNECTED_TEMP;
+        //Particle.publish("Error", "MAX6675 not connected", PUBLIC);
+    }
 
     return retVal;
 }
 
 double MAX6675::read_temp_celc(void) {
     double retVal = (double)read_temp_raw();
+    if (retVal == DICONNECTED_TEMP){
+        //Particle.publish("Error", "MAX6675 not connected", PUBLIC);
+        return retVal;
+    }
+    
     retVal /= CELSIUS_DIVIDER;
+    //Particle.publish("Temperature read", String(retVal));
     
     return retVal;
 }
