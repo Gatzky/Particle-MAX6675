@@ -36,7 +36,7 @@ Expected_temperature::Expected_temperature(double Range){
  * \return        : <none>
  ******************************************************************************/
 void Expected_temperature::Particle_begin(void){
-    Particle.subscribe("Expected", &Expected_temperature::Set_expected_temperature, this, ALL_DEVICES);     /* Set 'Set_expected_temperature' as callback of Particle.subscribe() */
+    Particle.subscribe("hook-response/readData/0", &Expected_temperature::Set_expected_temperature, this, MY_DEVICES);     /* Set 'Set_expected_temperature' as callback of Particle.subscribe() */
 } // End of void Particle_begin (void)
 
 /*******************************************************************************
@@ -49,10 +49,16 @@ void Expected_temperature::Particle_begin(void){
  * \param[in,out] : <none>
  * \return        : <none>
  ******************************************************************************/
-void Expected_temperature::Set_expected_temperature(const char *event, const char *data){
-    Exp_temp = atof(data);                                                                                  /* Overwrite 'Exp_temp' by data from event. 'atof' change string to double */
-    Min_exp_temp = Exp_temp - Range_hysteresis_exp_temp;                                                    /* Calculate Min_exp_temp */
-    Max_exp_temp = Exp_temp + Range_hysteresis_exp_temp;                                                    /* Calculate Max_exp_temp */
+void Expected_temperature::Set_expected_temperature(const char *topic, const char *data){
+    Exp_temp = 40;
+	//StaticJsonBuffer<100> jsonBuffer;
+	//char *mutableCopy = strdup(data);
+	//JsonObject& root = jsonBuffer.parseObject(mutableCopy);
+	//free(mutableCopy);
+	//Exp_temp = atof(root["Expected temperature:"]);*/	                                            /* Overwrite 'Exp_temp' by data from event. 'atof' change string to double */
+
+    Min_exp_temp = Exp_temp - Range_hysteresis_exp_temp;                                            /* Calculate Min_exp_temp */
+    Max_exp_temp = Exp_temp + Range_hysteresis_exp_temp;                                            /* Calculate Max_exp_temp */
     isSet_exp_temp = TRUE; 
 } // End of void Set_expected_temperature (const char *event, const char *data)
 

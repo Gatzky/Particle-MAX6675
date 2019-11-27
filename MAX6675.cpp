@@ -60,7 +60,10 @@ uint16_t MAX6675::read_temp_raw(void) {
     digitalWrite(cs, HIGH);                                     // Set deivce select to HIGH - stop communicaton
     
     if(retVal > DISCONNECTED_CHECK){                            // Check that retVal has reasonable values
-        is_disconnect = TRUE;                                   // If not sets disconnect flag to TRUE
+        is_disconnect = TRUE;                                   // If not: sets disconnect flag to TRUE
+    }
+    else{                                                       // If retVal is right sets flag to FALSE
+        is_disconnect = FALSE;
     }
 
     return retVal;                                              // Return
