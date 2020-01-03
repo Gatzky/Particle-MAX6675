@@ -9,7 +9,6 @@
 /*******************************************************************************
  ****  Macro Definitions
  ******************************************************************************/
-#define BLYNK_PRINT Serial  // Set serial output for debug prints
 #define HEATER_PIN 7                                                                    /* PIN for relay to control heater */
 /* PINS for MAx6675, three-pin SPI */
 #define TS_SO 4                                                                         /* PIN for spi clock (CLK or SCK) */
@@ -24,15 +23,14 @@ bool isSet_meas_temp = FALSE;                                                   
 int tc_timer_period = 5000;                                                             /* Value that define period between interrupt call. In ms. */
 double Range_Hysteresis = 1;                                                            /* Value that describe range of histeresis. */
 double Meas_temp_C = 0;                                                                 /* Variable to contain measured temperature */
-//char auth[] = "Bk5FOdgQ45dulOSqgKoYJy2t948Wqx86YYQYf9tC";
 
 /*******************************************************************************
  ****  Class Object Declarations
  ******************************************************************************/
 MAX6675 thermocouple(TS_CLK, TS_CS, TS_SO);                                             /* Class for SPI communication and calculate read values */
 Heater heater(HEATER_PIN);                                                              /* Class for control heater flag and heater PIN */
-Expected_temperature c_Exp_temp(Range_Hysteresis);                                        /* Set and check expected temperature */
-Timer tc_timer = Timer(tc_timer_period, Thermocouple_timer_callback, true);                        /* Timer for periodic refresh of temperature */
+Expected_temperature c_Exp_temp(Range_Hysteresis);                                      /* Set and check expected temperature */
+Timer tc_timer = Timer(tc_timer_period, Thermocouple_timer_callback, true);             /* Timer for periodic refresh of temperature */
 
 /*******************************************************************************
  ****  Function Declarations

@@ -3,7 +3,7 @@
  ******************************************************************************/
 #include "application.h"
 #include "Expected_temperature.h"
-
+#include <JsonParserGeneratorRK.h>
 /*******************************************************************************
  ****  Macro Definitions
  ******************************************************************************/
@@ -50,13 +50,20 @@ void Expected_temperature::Particle_begin(void){
  * \return        : <none>
  ******************************************************************************/
 void Expected_temperature::Set_expected_temperature(const char *topic, const char *data){
-    Exp_temp = 40;
-	//StaticJsonBuffer<100> jsonBuffer;
-	//char *mutableCopy = strdup(data);
-	//JsonObject& root = jsonBuffer.parseObject(mutableCopy);
-	//free(mutableCopy);
-	//Exp_temp = atof(root["Expected temperature:"]);*/	                                            /* Overwrite 'Exp_temp' by data from event. 'atof' change string to double */
-
+    JsonParserStatic<256,20> Parser;
+    Parser.clear();
+	Parser.addString(data);	                                                                    /* Overwrite 'Exp_temp' by data from event. 'atof' change string to double */
+    if (!Parser.parse()) {
+		Exp_temp = 100; // Error
+		return;
+	}
+	String Temp;
+	if (!Parser.getOuterValueByKey("Expected temperature", Temp)) {
+		Exp_temp = 200; // Error
+		return;
+	}
+    
+    Exp_temp = atof(Temp);
     Min_exp_temp = Exp_temp - Range_hysteresis_exp_temp;                                            /* Calculate Min_exp_temp */
     Max_exp_temp = Exp_temp + Range_hysteresis_exp_temp;                                            /* Calculate Max_exp_temp */
     isSet_exp_temp = TRUE; 
